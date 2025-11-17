@@ -22,7 +22,7 @@ export const signup = async (req, res, next) => {
     }
 
     // Check if user exists
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.users.findUnique({
       where: { email },
     });
 
@@ -34,7 +34,7 @@ export const signup = async (req, res, next) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     // Create user
-    const user = await prisma.user.create({
+    const user = await prisma.users.create({
       data: {
         name,
         email,
@@ -74,8 +74,8 @@ export const login = async (req, res, next) => {
       return errorResponse(res, 'Email and password are required', 400);
     }
 
-    // Find user
-    const user = await prisma.user.findUnique({
+    // Find user - CHANGED FROM prisma.user TO prisma.users
+    const user = await prisma.users.findUnique({
       where: { email },
     });
 

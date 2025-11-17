@@ -3,7 +3,7 @@ import { successResponse, errorResponse } from '../utils/helpers.js';
 
 export const getProfile = async (req, res, next) => {
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id: req.user.userId },
       select: {
         id: true,
