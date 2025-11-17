@@ -42,6 +42,10 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Backend is running!' });
 });
 
+setInterval(() => {
+  fetch('https://peernova.onrender.com/api/health')
+}, 5 * 60 * 1000); // Log every 5 minutes
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
