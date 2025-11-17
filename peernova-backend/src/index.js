@@ -18,6 +18,21 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ROOT ROUTE (THIS IS THE FIX)
+app.get('/', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'PeerNova Backend is running!',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      signup: 'POST /api/auth/signup',
+      login: 'POST /api/auth/login',
+      profile: 'GET /api/users/profile'
+    }
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
