@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import axiosInstance from '../api/axios';
+import useAuth from '../hooks/useAuth';
 
 
 function Signup() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -21,6 +23,12 @@ function Signup() {
   const [generalError, setGeneralError] = useState('');
   const [touched, setTouched] = useState({});
   const [passwordStrength, setPasswordStrength] = useState(0);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
 
   const calculatePasswordStrength = (password) => {
@@ -174,7 +182,7 @@ function Signup() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
-      <Navbar isAuthenticated={false} />
+      <Navbar />
 
 
       <div className="flex-1 flex items-center justify-center px-6 py-12">

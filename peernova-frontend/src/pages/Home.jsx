@@ -1,9 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import Button from '../components/common/Button';
+import useAuth from '../hooks/useAuth';
 
 function Home() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
   const features = [
     {
       icon: '💬',
@@ -47,7 +58,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
       {/* Navbar */}
-      <Navbar isAuthenticated={false} />
+      <Navbar />
 
       {/* Hero Section */}
       <section className="flex-1 flex items-center justify-center px-6 pt-12 pb-20 md:pt-16 md:pb-32">
