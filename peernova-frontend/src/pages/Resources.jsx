@@ -109,8 +109,9 @@ function Resources() {
       setIsCreateOpen(false);
       addToast('success', 'Resource uploaded successfully');
     },
-    onError: () => {
-      addToast('error', 'Failed to upload resource. Please try again.');
+    onError: (error) => {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to upload resource. Please try again.';
+      addToast('error', errorMessage);
     },
   });
 

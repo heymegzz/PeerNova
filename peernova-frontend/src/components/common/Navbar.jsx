@@ -158,13 +158,6 @@ function Navbar() {
                     >
                       View Profile
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => navigate('/settings')}
-                      className="w-full text-left px-3 py-2 text-gray-200 hover:bg-[#1a1a1a]"
-                    >
-                      Settings
-                    </button>
                     <div className="my-1 border-t border-[#1a1a1a]" />
                     <button
                       type="button"
@@ -241,13 +234,6 @@ function Navbar() {
               className="block w-full text-left px-2 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-[#111111]"
             >
               View Profile
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/settings')}
-              className="block w-full text-left px-2 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-[#111111]"
-            >
-              Settings
             </button>
             <button
               type="button"

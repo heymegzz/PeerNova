@@ -1,19 +1,17 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import LoadingSpinner from '../components/states/LoadingSpinner';
 import EmptyState from '../components/states/EmptyState';
-import Button from '../components/common/Button';
 import ENDPOINTS from '../api/endpoints';
 import axiosInstance from '../api/axios';
-import EditProfileModal from '../components/modals/EditProfileModal';
 import StudyGroupCard from '../components/cards/StudyGroupCard';
 import ResourceCard from '../components/cards/ResourceCard';
 import { ToastContainer } from '../components/notifications/Toast';
 import { useState } from 'react';
 
 function Profile() {
-  const queryClient = useQueryClient();
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('groups'); // 'groups' | 'resources' | 'joined'
   const [toasts, setToasts] = useState([]);
 
@@ -39,21 +37,6 @@ function Profile() {
   });
 
   const profile = data;
-
-  const editProfileMutation = useMutation({
-    mutationFn: (payload) =>
-      axiosInstance.put(ENDPOINTS.PROFILE, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      setIsEditOpen(false);
-      addToast('success', 'Profile updated successfully');
-    },
-    onError: () => addToast('error', 'Failed to update profile.'),
-  });
-
-  const isMutating = editProfileMutation.isPending;
 
   if (isLoading) {
     return (
@@ -91,6 +74,18 @@ function Profile() {
     return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
   };
 
+  const handleViewResource = (resource) => {
+    navigate(`/resources/${resource.id}`);
+  };
+
+  const handleDownloadResource = (resource) => {
+    if (resource.fileUrl) {
+      window.open(resource.fileUrl, '_blank');
+    } else {
+      addToast('error', 'Download link is not available for this resource.');
+    }
+  };
+
   return (
     <>
       <DashboardLayout title="Profile">
@@ -113,14 +108,6 @@ function Profile() {
                   Member since {profile.memberSinceLabel}
                 </p>
               )}
-              <Button
-                variant="secondary"
-                size="sm"
-                className="mt-4"
-                onClick={() => setIsEditOpen(true)}
-              >
-                Edit Profile
-              </Button>
             </div>
 
             <div className="border border-[#1a1a1a] bg-[#111111] rounded-2xl p-4">
@@ -230,6 +217,8 @@ function Profile() {
                       resource={resource}
                       viewMode="grid"
                       isOwner
+                      onView={handleViewResource}
+                      onDownload={handleDownloadResource}
                     />
                   ))}
                 </div>
@@ -275,24 +264,7 @@ function Profile() {
         </div>
       </DashboardLayout>
 
-      <EditProfileModal
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        onSubmit={(payload) => editProfileMutation.mutate(payload)}
-        isLoading={editProfileMutation.isPending}
-        user={user}
-      />
-
       <ToastContainer toasts={toasts} dismissToast={dismissToast} />
-
-      {isMutating && (
-        <div className="fixed inset-0 z-40 flex items-end justify-center pointer-events-none">
-          <div className="mb-8 rounded-full bg-black/70 px-4 py-2 text-xs text-gray-300 flex items-center gap-2">
-            <span className="animate-spin rounded-full h-3 w-3 border border-white border-t-transparent" />
-            <span>Updating profile...</span>
-          </div>
-        </div>
-      )}
     </>
   );
 }

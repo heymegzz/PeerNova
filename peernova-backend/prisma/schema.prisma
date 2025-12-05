@@ -13,4 +13,96 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  
+  // Relationships
+  ownedGroups      StudyGroup[]      @relation("GroupOwner")
+  joinedGroups     StudyGroupMember[]
+  uploadedResources Resource[]
+  settings         Settings?
+}
+
+enum Subject {
+  DataStructuresAlgorithms
+  WebDevelopment
+  MachineLearning
+  CompetitiveProgramming
+  MobileDevelopment
+  Other
+}
+
+enum ResourceCategory {
+  Notes
+  PDF
+  PresentationSlides
+  Video
+  Code
+  Other
+}
+
+model StudyGroup {
+  id          String   @id @default(uuid())
+  name        String
+  description String   @db.Text
+  subject     Subject
+  owner_id    Int
+  maxMembers  Int      @default(50)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner   User                @relation("GroupOwner", fields: [owner_id], references: [id], onDelete: Cascade)
+  members StudyGroupMember[]
+  resources Resource[]
+
+  @@index([owner_id])
+  @@index([createdAt])
+  @@index([subject])
+}
+
+model StudyGroupMember {
+  id            String   @id @default(uuid())
+  studyGroup_id String
+  user_id       Int
+  joinedAt      DateTime @default(now())
+
+  studyGroup StudyGroup @relation(fields: [studyGroup_id], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([studyGroup_id, user_id])
+  @@index([studyGroup_id])
+  @@index([user_id])
+}
+
+model Resource {
+  id            String          @id @default(uuid())
+  title         String
+  description   String          @db.Text
+  category      ResourceCategory
+  subject       String?
+  file_url      String
+  fileName      String
+  uploadedBy_id Int
+  downloadCount Int             @default(0)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  uploadedBy User        @relation(fields: [uploadedBy_id], references: [id], onDelete: Cascade)
+  studyGroup StudyGroup? @relation(fields: [studyGroup_id], references: [id], onDelete: SetNull)
+  studyGroup_id String?
+
+  @@index([uploadedBy_id])
+  @@index([category])
+  @@index([createdAt])
+  @@index([studyGroup_id])
+}
+
+model Settings {
+  user_id              Int      @id
+  emailNotifications   Boolean  @default(true)
+  inAppNotifications   Boolean  @default(true)
+  privateProfile       Boolean  @default(false)
+  hideActivity         Boolean  @default(false)
+  theme                String   @default("dark")
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

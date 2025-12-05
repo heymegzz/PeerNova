@@ -1,31 +1,49 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import Button from '../components/common/Button';
 import DashboardLayout from '../components/layouts/DashboardLayout';
+import axiosInstance from '../api/axios';
+import ENDPOINTS from '../api/endpoints';
+import LoadingSpinner from '../components/states/LoadingSpinner';
 
 function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [localUser, setLocalUser] = useState(null);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
-      setUser(JSON.parse(userData));
+      setLocalUser(JSON.parse(userData));
     } else {
       navigate('/login');
     }
   }, [navigate]);
 
-  if (!user) {
+  // Fetch profile stats from API
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['dashboard-profile'],
+    queryFn: async () => {
+      const response = await axiosInstance.get(ENDPOINTS.PROFILE);
+      return response.data.data;
+    },
+    enabled: !!localUser, // Only fetch if user is logged in
+  });
+
+  if (!localUser || isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading...</p>
-        </div>
-      </div>
+      <DashboardLayout title="Dashboard">
+        <LoadingSpinner fullPage message="Loading dashboard..." />
+      </DashboardLayout>
     );
   }
+
+  const user = localUser;
+  const stats = profile?.stats || {
+    groupsJoined: 0,
+    groupsCreated: 0,
+    resourcesUploaded: 0,
+  };
 
   const quickLinks = [
     {
@@ -51,22 +69,18 @@ function Dashboard() {
     },
   ];
 
-  const stats = [
+  const statsList = [
     {
       label: 'Groups Joined',
-      value: user.stats?.groupsJoined ?? 0,
+      value: stats.groupsJoined,
     },
     {
       label: 'Groups Created',
-      value: user.stats?.groupsCreated ?? 0,
+      value: stats.groupsCreated,
     },
     {
       label: 'Resources Uploaded',
-      value: user.stats?.resourcesUploaded ?? 0,
-    },
-    {
-      label: 'Total Downloads',
-      value: user.stats?.totalDownloads ?? 0,
+      value: stats.resourcesUploaded,
     },
   ];
 
@@ -77,8 +91,8 @@ function Dashboard() {
     >
       <div className="space-y-8">
         {/* Stats row */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((stat) => (
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {statsList.map((stat) => (
             <div
               key={stat.label}
               className="rounded-xl border border-[#1a1a1a] bg-[#111111] px-4 py-3"

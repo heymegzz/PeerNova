@@ -9,7 +9,6 @@ import StudyGroupDetail from '../pages/StudyGroupDetail';
 import Resources from '../pages/Resources';
 import ResourceDetail from '../pages/ResourceDetail';
 import Profile from '../pages/Profile';
-import Settings from '../pages/Settings';
 import ProtectedRoute from './ProtectedRoute';
 
 function AppRoutes() {
@@ -26,7 +25,6 @@ function AppRoutes() {
         <Route path="/resources" element={<Resources />} />
         <Route path="/resources/:id" element={<ResourceDetail />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

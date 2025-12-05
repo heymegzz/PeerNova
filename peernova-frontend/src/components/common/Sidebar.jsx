@@ -7,7 +7,6 @@ const navItems = [
   { to: '/study-groups', label: 'Study Groups', icon: '👥' },
   { to: '/resources', label: 'Resources', icon: '📚' },
   { to: '/profile', label: 'Profile', icon: '👤' },
-  { to: '/settings', label: 'Settings', icon: '⚙️' },
 ];
 
 function Sidebar() {
