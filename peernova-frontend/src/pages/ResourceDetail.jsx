@@ -149,11 +149,47 @@ function ResourceDetail() {
                 Preview
               </h3>
               {resource.previewUrl ? (
-                <iframe
-                  title={resource.title}
-                  src={resource.previewUrl}
-                  className="w-full h-64 rounded-lg border border-[#1a1a1a] bg-black"
-                />
+                (() => {
+                  const fileExt = resource.fileName?.split('.').pop()?.toLowerCase() || '';
+                  const isPDF = fileExt === 'pdf';
+                  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExt);
+                  
+                  if (isPDF) {
+                    return (
+                      <div className="w-full rounded-lg border border-[#1a1a1a] bg-black overflow-hidden">
+                        <iframe
+                          title={resource.title}
+                          src={`${resource.previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                          className="w-full h-[600px]"
+                          type="application/pdf"
+                          onError={() => {
+                            addToast('error', 'Failed to load PDF preview. Please download the file to view it.');
+                          }}
+                        />
+                      </div>
+                    );
+                  } else if (isImage) {
+                    return (
+                      <div className="w-full rounded-lg border border-[#1a1a1a] bg-black overflow-hidden flex items-center justify-center min-h-[200px]">
+                        <img
+                          src={resource.previewUrl}
+                          alt={resource.title}
+                          className="w-full h-auto max-h-[600px] object-contain"
+                          onError={() => {
+                            addToast('error', 'Failed to load image preview. Please download the file to view it.');
+                          }}
+                        />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="flex flex-col items-center justify-center py-10 text-xs text-gray-500">
+                        <DocumentTextIcon className="h-12 w-12 text-gray-500 mb-3" />
+                        <p>Preview not available for this file type. Use the download button to view the file.</p>
+                      </div>
+                    );
+                  }
+                })()
               ) : (
                 <div className="flex flex-col items-center justify-center py-10 text-xs text-gray-500">
                   <DocumentTextIcon className="h-12 w-12 text-gray-500 mb-3" />

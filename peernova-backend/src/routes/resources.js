@@ -274,10 +274,12 @@ router.get('/:id', authenticate, validateResourceId, async (req, res, next) => {
       : `${baseUrl}${resource.file_url}`;
 
     // Check if preview is available (for PDFs and images)
+    // Use preview endpoint for proper headers
     let previewUrl = null;
     const fileExt = path.extname(resource.file_url).toLowerCase();
     if (['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(fileExt)) {
-      previewUrl = fileUrl;
+      const filename = path.basename(resource.file_url);
+      previewUrl = `${baseUrl}/api/resources/preview/${filename}`;
     }
 
     const response = {
@@ -442,8 +444,56 @@ router.delete('/:id', authenticate, validateResourceId, async (req, res, next) =
 });
 
 /**
- * GET /uploads/:filename
- * Serve uploaded files
+ * GET /api/resources/preview/:filename
+ * Serve files for preview (with proper headers for embedding)
+ */
+router.get('/preview/:filename', authenticate, async (req, res, next) => {
+  try {
+    const { filename } = req.params;
+    const filePath = path.join(uploadsDir, filename);
+
+    // Security: prevent directory traversal
+    if (!filePath.startsWith(uploadsDir)) {
+      throw new BadRequestError('Invalid file path');
+    }
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      throw new NotFoundError('File not found');
+    }
+
+    // Get file extension to set proper content type
+    const fileExt = path.extname(filename).toLowerCase();
+    const contentTypes = {
+      '.pdf': 'application/pdf',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.gif': 'image/gif',
+      '.webp': 'image/webp',
+    };
+
+    const contentType = contentTypes[fileExt] || 'application/octet-stream';
+
+    // Set headers for preview (allow embedding, no download)
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', 'inline'); // inline instead of attachment
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    
+    // Allow CORS for preview
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
+
+    // Send file
+    res.sendFile(filePath);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/resources/download/:filename
+ * Serve uploaded files (triggers download)
  */
 router.get('/download/:filename', authenticate, async (req, res, next) => {
   try {
@@ -471,7 +521,8 @@ router.get('/download/:filename', authenticate, async (req, res, next) => {
       },
     });
 
-    // Send file
+    // Send file with download headers
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.sendFile(filePath);
   } catch (err) {
     next(err);
