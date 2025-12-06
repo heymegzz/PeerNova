@@ -6,14 +6,9 @@ function ResourceCard({
   viewMode = 'grid',
   onEdit,
   onDelete,
-  onView,
   onDownload,
   isOwner,
 }) {
-  const handleView = () => {
-    onView?.(resource);
-  };
-
   const handleDownload = () => {
     onDownload?.(resource);
   };
@@ -42,9 +37,6 @@ function ResourceCard({
           {resource.uploadedBy}
         </div>
         <div className="col-span-6 md:col-span-2 flex items-center justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={handleView}>
-            View
-          </Button>
           <Button variant="ghost" size="sm" onClick={handleDownload}>
             Download
           </Button>
@@ -92,10 +84,7 @@ function ResourceCard({
 
       <div className="flex flex-wrap gap-2 justify-between pt-2">
         <div className="flex gap-2">
-          <Button variant="secondary" size="sm" onClick={handleView}>
-            View
-          </Button>
-          <Button variant="ghost" size="sm" onClick={handleDownload}>
+          <Button variant="secondary" size="sm" onClick={handleDownload}>
             Download
           </Button>
         </div>

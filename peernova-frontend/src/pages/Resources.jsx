@@ -176,10 +176,6 @@ function Resources() {
     deleteMutation.mutate(resource);
   };
 
-  const handleViewResource = (resource) => {
-    navigate(`/resources/${resource.id}`);
-  };
-
   const handleDownloadResource = (resource) => {
     if (resource.fileUrl) {
       window.open(resource.fileUrl, '_blank');
@@ -381,7 +377,6 @@ function Resources() {
                         viewMode="grid"
                         onEdit={setEditingResource}
                         onDelete={handleDeleteResource}
-                        onView={handleViewResource}
                         onDownload={handleDownloadResource}
                         isOwner={resource.isOwner}
                       />
@@ -403,7 +398,6 @@ function Resources() {
                         viewMode="list"
                         onEdit={setEditingResource}
                         onDelete={handleDeleteResource}
-                        onView={handleViewResource}
                         onDownload={handleDownloadResource}
                         isOwner={resource.isOwner}
                       />

@@ -75,10 +75,6 @@ function Profile() {
     return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
   };
 
-  const handleViewResource = (resource) => {
-    navigate(`/resources/${resource.id}`);
-  };
-
   const handleDownloadResource = (resource) => {
     if (resource.fileUrl) {
       window.open(resource.fileUrl, '_blank');
@@ -218,7 +214,6 @@ function Profile() {
                       resource={resource}
                       viewMode="grid"
                       isOwner
-                      onView={handleViewResource}
                       onDownload={handleDownloadResource}
                     />
                   ))}
