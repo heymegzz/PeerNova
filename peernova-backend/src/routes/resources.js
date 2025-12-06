@@ -241,69 +241,6 @@ router.post('/', authenticate, uploadRateLimit, upload, async (req, res, next) =
 });
 
 /**
- * GET /api/resources/preview/:filename
- * Serve files for preview (with proper headers for embedding)
- * Note: This route must come before /:id to avoid route conflicts
- * No authentication required here because iframes/img tags can't send auth headers
- * Security: We verify the file exists and belongs to a resource
- */
-router.get('/preview/:filename', async (req, res, next) => {
-  try {
-    const { filename } = req.params;
-    const filePath = path.join(uploadsDir, filename);
-
-    // Security: prevent directory traversal
-    const normalizedPath = path.normalize(filePath);
-    if (!normalizedPath.startsWith(path.normalize(uploadsDir))) {
-      throw new BadRequestError('Invalid file path');
-    }
-
-    // Check if file exists
-    if (!fs.existsSync(filePath)) {
-      throw new NotFoundError('File not found');
-    }
-
-    // Verify file belongs to a resource (security check)
-    const fileUrl = `/uploads/${filename}`;
-    const resource = await prisma.resource.findFirst({
-      where: { file_url: fileUrl },
-    });
-
-    if (!resource) {
-      throw new NotFoundError('Resource not found');
-    }
-
-    // Get file extension to set proper content type
-    const fileExt = path.extname(filename).toLowerCase();
-    const contentTypes = {
-      '.pdf': 'application/pdf',
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif',
-      '.webp': 'image/webp',
-    };
-
-    const contentType = contentTypes[fileExt] || 'application/octet-stream';
-
-    // Set headers for preview (allow embedding, no download)
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Disposition', 'inline'); // inline instead of attachment
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    
-    // Allow CORS for preview (needed for iframes)
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-    // Send file
-    res.sendFile(normalizedPath);
-  } catch (err) {
-    next(err);
-  }
-});
-
-/**
  * GET /api/resources/:id
  * Get single resource
  */
@@ -336,15 +273,6 @@ router.get('/:id', authenticate, validateResourceId, async (req, res, next) => {
       ? resource.file_url 
       : `${baseUrl}${resource.file_url}`;
 
-    // Check if preview is available (for PDFs and images)
-    // Use preview endpoint for proper headers
-    let previewUrl = null;
-    const fileExt = path.extname(resource.file_url).toLowerCase();
-    if (['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(fileExt)) {
-      const filename = path.basename(resource.file_url);
-      previewUrl = `${baseUrl}/api/resources/preview/${filename}`;
-    }
-
     const response = {
       id: resource.id,
       title: resource.title,
@@ -358,7 +286,6 @@ router.get('/:id', authenticate, validateResourceId, async (req, res, next) => {
       uploadedBy: resource.uploadedBy.name,
       createdAt: resource.createdAt,
       createdAtLabel: formatDateLabel(resource.createdAt),
-      previewUrl,
     };
 
     return success(res, response, 'Resource retrieved successfully');

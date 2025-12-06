@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ExclamationTriangleIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import LoadingSpinner from '../components/states/LoadingSpinner';
 import EmptyState from '../components/states/EmptyState';
@@ -42,12 +42,6 @@ function ResourceDetail() {
 
   const resource = data;
   const isOwner = resource?.isOwner;
-
-  // Debug: Log preview URL
-  if (resource?.previewUrl) {
-    console.log('Resource preview URL:', resource.previewUrl);
-    console.log('Resource file name:', resource.fileName);
-  }
 
   const deleteMutation = useMutation({
     mutationFn: () => axiosInstance.delete(`${ENDPOINTS.RESOURCES}/${id}`),
@@ -140,76 +134,14 @@ function ResourceDetail() {
         </section>
 
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-4">
-            <div className="border border-[#1a1a1a] bg-[#111111] rounded-xl p-4">
-              <h3 className="text-sm font-semibold text-white mb-2">
+          <div className="lg:col-span-2">
+            <div className="border border-[#1a1a1a] bg-[#111111] rounded-xl p-6">
+              <h3 className="text-sm font-semibold text-white mb-4">
                 Description
               </h3>
-              <p className="text-sm text-gray-300 whitespace-pre-line">
+              <p className="text-sm text-gray-300 whitespace-pre-line leading-relaxed">
                 {resource.description || 'No description provided for this resource.'}
               </p>
-            </div>
-
-            <div className="border border-[#1a1a1a] bg-[#111111] rounded-xl p-4">
-              <h3 className="text-sm font-semibold text-white mb-2">
-                Preview
-              </h3>
-              {resource.previewUrl ? (
-                (() => {
-                  const fileExt = resource.fileName?.split('.').pop()?.toLowerCase() || '';
-                  const isPDF = fileExt === 'pdf';
-                  const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExt);
-                  
-                  if (isPDF) {
-                    return (
-                      <div className="w-full rounded-lg border border-[#1a1a1a] bg-black overflow-hidden">
-                        <iframe
-                          title={resource.title}
-                          src={resource.previewUrl}
-                          className="w-full h-[600px] border-0"
-                          style={{ minHeight: '600px' }}
-                          onLoad={() => {
-                            console.log('PDF preview loaded:', resource.previewUrl);
-                          }}
-                          onError={(e) => {
-                            console.error('PDF preview error:', e);
-                            addToast('error', 'Failed to load PDF preview. Please download the file to view it.');
-                          }}
-                        />
-                      </div>
-                    );
-                  } else if (isImage) {
-                    return (
-                      <div className="w-full rounded-lg border border-[#1a1a1a] bg-black overflow-hidden flex items-center justify-center min-h-[200px]">
-                        <img
-                          src={resource.previewUrl}
-                          alt={resource.title}
-                          className="w-full h-auto max-h-[600px] object-contain"
-                          onLoad={() => {
-                            console.log('Image preview loaded:', resource.previewUrl);
-                          }}
-                          onError={(e) => {
-                            console.error('Image preview error:', e, resource.previewUrl);
-                            addToast('error', 'Failed to load image preview. Please download the file to view it.');
-                          }}
-                        />
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div className="flex flex-col items-center justify-center py-10 text-xs text-gray-500">
-                        <DocumentTextIcon className="h-12 w-12 text-gray-500 mb-3" />
-                        <p>Preview not available for this file type. Use the download button to view the file.</p>
-                      </div>
-                    );
-                  }
-                })()
-              ) : (
-                <div className="flex flex-col items-center justify-center py-10 text-xs text-gray-500">
-                  <DocumentTextIcon className="h-12 w-12 text-gray-500 mb-3" />
-                  <p>No inline preview available. Use the button above to download.</p>
-                </div>
-              )}
             </div>
           </div>
 
