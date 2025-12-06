@@ -63,20 +63,20 @@ function Sidebar() {
           {navItems.map((item) => {
             const IconComponent = item.icon;
             return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? 'bg-white text-black'
-                      : 'text-gray-300 hover:text-white hover:bg-[#1a1a1a]'
-                  }`
-                }
-              >
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? 'bg-white text-black'
+                    : 'text-gray-300 hover:text-white hover:bg-[#1a1a1a]'
+                }`
+              }
+            >
                 <IconComponent className="h-5 w-5" />
-                {isOpen && <span>{item.label}</span>}
-              </NavLink>
+              {isOpen && <span>{item.label}</span>}
+            </NavLink>
             );
           })}
         </nav>

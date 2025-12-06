@@ -43,6 +43,12 @@ function ResourceDetail() {
   const resource = data;
   const isOwner = resource?.isOwner;
 
+  // Debug: Log preview URL
+  if (resource?.previewUrl) {
+    console.log('Resource preview URL:', resource.previewUrl);
+    console.log('Resource file name:', resource.fileName);
+  }
+
   const deleteMutation = useMutation({
     mutationFn: () => axiosInstance.delete(`${ENDPOINTS.RESOURCES}/${id}`),
     onSuccess: () => {
@@ -159,10 +165,14 @@ function ResourceDetail() {
                       <div className="w-full rounded-lg border border-[#1a1a1a] bg-black overflow-hidden">
                         <iframe
                           title={resource.title}
-                          src={`${resource.previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                          className="w-full h-[600px]"
-                          type="application/pdf"
-                          onError={() => {
+                          src={resource.previewUrl}
+                          className="w-full h-[600px] border-0"
+                          style={{ minHeight: '600px' }}
+                          onLoad={() => {
+                            console.log('PDF preview loaded:', resource.previewUrl);
+                          }}
+                          onError={(e) => {
+                            console.error('PDF preview error:', e);
                             addToast('error', 'Failed to load PDF preview. Please download the file to view it.');
                           }}
                         />
@@ -175,7 +185,11 @@ function ResourceDetail() {
                           src={resource.previewUrl}
                           alt={resource.title}
                           className="w-full h-auto max-h-[600px] object-contain"
-                          onError={() => {
+                          onLoad={() => {
+                            console.log('Image preview loaded:', resource.previewUrl);
+                          }}
+                          onError={(e) => {
+                            console.error('Image preview error:', e, resource.previewUrl);
                             addToast('error', 'Failed to load image preview. Please download the file to view it.');
                           }}
                         />
