@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import Input from '../components/common/Input';
@@ -300,7 +301,7 @@ function Signup() {
               </label>
               {touched.agreeToTerms && errors.agreeToTerms && (
                 <div className="flex items-center gap-1.5">
-                  <span className="text-gray-500 text-xs">✕</span>
+                  <XMarkIcon className="h-4 w-4 text-red-400" />
                   <p className="text-gray-400 text-xs font-medium">{errors.agreeToTerms}</p>
                 </div>
               )}

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import LoadingSpinner from '../components/states/LoadingSpinner';
 import EmptyState from '../components/states/EmptyState';
@@ -50,7 +51,7 @@ function Profile() {
     return (
       <DashboardLayout title="Profile">
         <EmptyState
-          icon="⚠️"
+          icon={ExclamationTriangleIcon}
           title="Unable to load profile"
           message="There was an issue loading your profile. Please try again later."
         />

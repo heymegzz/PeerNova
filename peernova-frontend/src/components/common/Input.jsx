@@ -1,3 +1,5 @@
+import { XCircleIcon } from '@heroicons/react/24/outline';
+
 function Input({ 
   label, 
   type = 'text', 
@@ -45,7 +47,7 @@ function Input({
       </div>
       {error && (
         <div className="flex items-center gap-1.5 mt-2">
-          <span className="text-gray-500 text-xs">✕</span>
+          <XCircleIcon className="h-4 w-4 text-red-400" />
           <p className="text-gray-400 text-xs font-medium">{error}</p>
         </div>
       )}

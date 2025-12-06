@@ -1,5 +1,14 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  ChatBubbleLeftRightIcon,
+  UserGroupIcon,
+  BookOpenIcon,
+  SparklesIcon,
+  MagnifyingGlassIcon,
+  BoltIcon,
+  CheckCircleIcon,
+} from '@heroicons/react/24/outline';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import Button from '../components/common/Button';
@@ -17,34 +26,40 @@ function Home() {
 
   const features = [
     {
-      icon: '💬',
+      icon: ChatBubbleLeftRightIcon,
       title: 'Community Feed',
-      description: 'Share posts, updates, and questions with your campus community in real-time.'
+      description: 'Share posts, updates, and questions with your campus community in real-time.',
+      color: 'text-blue-400',
     },
     {
-      icon: '👥',
+      icon: UserGroupIcon,
       title: 'Study Groups',
-      description: 'Form and join subject-based or interest-based study groups easily.'
+      description: 'Form and join subject-based or interest-based study groups easily.',
+      color: 'text-purple-400',
     },
     {
-      icon: '📚',
+      icon: BookOpenIcon,
       title: 'Resource Library',
-      description: 'Share and discover notes, PDFs, and study materials from peers.'
+      description: 'Share and discover notes, PDFs, and study materials from peers.',
+      color: 'text-green-400',
     },
     {
-      icon: '🎉',
+      icon: SparklesIcon,
       title: 'Event Hub',
-      description: 'Discover and attend campus events, hackathons, and workshops.'
+      description: 'Discover and attend campus events, hackathons, and workshops.',
+      color: 'text-yellow-400',
     },
     {
-      icon: '🔍',
+      icon: MagnifyingGlassIcon,
       title: 'Smart Search',
-      description: 'Find people, posts, and resources with advanced filtering and sorting.'
+      description: 'Find people, posts, and resources with advanced filtering and sorting.',
+      color: 'text-pink-400',
     },
     {
-      icon: '⚡',
+      icon: BoltIcon,
       title: 'Real-time Notifications',
-      description: 'Get notified about group updates, events, and new resources instantly.'
+      description: 'Get notified about group updates, events, and new resources instantly.',
+      color: 'text-orange-400',
     }
   ];
 
@@ -64,9 +79,10 @@ function Home() {
       <section className="flex-1 flex items-center justify-center px-6 pt-12 pb-20 md:pt-16 md:pb-32">
         <div className="max-w-5xl mx-auto text-center space-y-10 w-full">
           {/* Badge */}
-          <div className="inline-block">
-            <span className="text-xs font-semibold tracking-widest text-gray-400 uppercase px-4 py-2 bg-[#111111] rounded-full border border-[#1a1a1a]">
-              ✨ Welcome to the Future of Campus Collaboration
+          <div className="inline-flex items-center gap-2">
+            <span className="text-xs font-semibold tracking-widest text-gray-400 uppercase px-4 py-2 bg-[#111111] rounded-full border border-[#1a1a1a] flex items-center gap-2">
+              <SparklesIcon className="h-4 w-4 text-yellow-400" />
+              Welcome to the Future of Campus Collaboration
             </span>
           </div>
 
@@ -100,9 +116,18 @@ function Home() {
 
           {/* Trust badges */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-500">
-            <span>✓ Secure & Private</span>
-            <span>✓ No Spam</span>
-            <span>✓ Free to Join</span>
+            <span className="flex items-center gap-1">
+              <CheckCircleIcon className="h-4 w-4 text-green-400" />
+              Secure & Private
+            </span>
+            <span className="flex items-center gap-1">
+              <CheckCircleIcon className="h-4 w-4 text-green-400" />
+              No Spam
+            </span>
+            <span className="flex items-center gap-1">
+              <CheckCircleIcon className="h-4 w-4 text-green-400" />
+              Free to Join
+            </span>
           </div>
         </div>
       </section>
@@ -138,22 +163,25 @@ function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className="p-8 bg-[#111111] border border-[#1a1a1a] rounded-xl hover:border-[#333333] transition-all duration-300 group"
-              >
-                <div className="text-5xl mb-6 group-hover:scale-110 transition-transform duration-300">
-                  {feature.icon}
+            {features.map((feature) => {
+              const IconComponent = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="p-8 bg-[#111111] border border-[#1a1a1a] rounded-xl hover:border-[#333333] transition-all duration-300 group"
+                >
+                  <div className="mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <IconComponent className={`h-12 w-12 ${feature.color}`} />
+                  </div>
+                  <h3 className="text-white font-semibold mb-3 text-xl">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-white font-semibold mb-3 text-xl">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

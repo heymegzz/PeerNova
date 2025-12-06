@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ExclamationTriangleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import LoadingSpinner from '../components/states/LoadingSpinner';
 import EmptyState from '../components/states/EmptyState';
@@ -105,7 +106,7 @@ function StudyGroupDetail() {
     return (
       <DashboardLayout title="Study Group">
         <EmptyState
-          icon="⚠️"
+          icon={ExclamationTriangleIcon}
           title="Study group not found"
           message="This group may have been deleted or is not accessible."
           actionText="Back to Study Groups"
@@ -153,7 +154,10 @@ function StudyGroupDetail() {
               <span className="text-gray-200">{group.createdBy || 'Unknown'}</span>
             </span>
             <span>•</span>
-            <span>👥 {group.memberCount ?? 0} members</span>
+            <span className="flex items-center gap-1">
+              <UserGroupIcon className="h-4 w-4" />
+              {group.memberCount ?? 0} members
+            </span>
           </div>
         </section>
 

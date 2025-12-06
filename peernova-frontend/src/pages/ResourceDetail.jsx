@@ -1,5 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ExclamationTriangleIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import LoadingSpinner from '../components/states/LoadingSpinner';
 import EmptyState from '../components/states/EmptyState';
@@ -82,7 +83,7 @@ function ResourceDetail() {
     return (
       <DashboardLayout title="Resource">
         <EmptyState
-          icon="⚠️"
+          icon={ExclamationTriangleIcon}
           title="Resource not found"
           message="This resource may have been deleted or is not accessible."
           actionText="Back to Resources"
@@ -155,7 +156,7 @@ function ResourceDetail() {
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center py-10 text-xs text-gray-500">
-                  <div className="text-4xl mb-3">📄</div>
+                  <DocumentTextIcon className="h-12 w-12 text-gray-500 mb-3" />
                   <p>No inline preview available. Use the button above to download.</p>
                 </div>
               )}

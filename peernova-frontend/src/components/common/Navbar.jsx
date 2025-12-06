@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import useAuth from '../../hooks/useAuth';
 
 function Navbar() {
@@ -146,7 +147,7 @@ function Navbar() {
                   <span className="text-xs text-gray-300 max-w-[120px] truncate">
                     {user?.name || user?.fullName || user?.email}
                   </span>
-                  <span className="text-gray-500 text-xs">▾</span>
+                  <ChevronDownIcon className="h-3 w-3 text-gray-500" />
                 </button>
 
                 {isProfileOpen && (
@@ -188,7 +189,11 @@ function Navbar() {
               className="inline-flex items-center justify-center rounded-md p-2 text-gray-200 hover:bg-[#111111] hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
             >
               <span className="sr-only">Toggle navigation</span>
-              <span className="text-lg">{isMobileMenuOpen ? '✕' : '☰'}</span>
+              {isMobileMenuOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <Bars3Icon className="h-6 w-6" />
+              )}
             </button>
           )}
         </div>

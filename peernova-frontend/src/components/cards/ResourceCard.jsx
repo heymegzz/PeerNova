@@ -1,3 +1,4 @@
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import Button from '../common/Button';
 
 function ResourceCard({
@@ -67,8 +68,8 @@ function ResourceCard({
       <div className="mb-3">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-[#1a1a1a] flex items-center justify-center text-lg">
-              📄
+            <div className="h-9 w-9 rounded-lg bg-[#1a1a1a] flex items-center justify-center">
+              <DocumentTextIcon className="h-5 w-5 text-gray-400" />
             </div>
             <span className="text-[11px] text-gray-400 px-2 py-1 rounded-full bg-[#1a1a1a]">
               {resource.category}

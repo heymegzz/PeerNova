@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import {
+  HomeIcon,
+  UserGroupIcon,
+  BookOpenIcon,
+  UserIcon,
+  ArrowRightOnRectangleIcon,
+} from '@heroicons/react/24/outline';
 import useAuth from '../../hooks/useAuth';
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: '🏠' },
-  { to: '/study-groups', label: 'Study Groups', icon: '👥' },
-  { to: '/resources', label: 'Resources', icon: '📚' },
-  { to: '/profile', label: 'Profile', icon: '👤' },
+  { to: '/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { to: '/study-groups', label: 'Study Groups', icon: UserGroupIcon },
+  { to: '/resources', label: 'Resources', icon: BookOpenIcon },
+  { to: '/profile', label: 'Profile', icon: UserIcon },
 ];
 
 function Sidebar() {
@@ -53,22 +60,25 @@ function Sidebar() {
 
         {/* Nav links */}
         <nav className="flex-1 overflow-y-auto px-2 py-3 space-y-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
-                  isActive
-                    ? 'bg-white text-black'
-                    : 'text-gray-300 hover:text-white hover:bg-[#1a1a1a]'
-                }`
-              }
-            >
-              <span className="text-lg">{item.icon}</span>
-              {isOpen && <span>{item.label}</span>}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                    isActive
+                      ? 'bg-white text-black'
+                      : 'text-gray-300 hover:text-white hover:bg-[#1a1a1a]'
+                  }`
+                }
+              >
+                <IconComponent className="h-5 w-5" />
+                {isOpen && <span>{item.label}</span>}
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* Logout */}
@@ -78,7 +88,7 @@ function Sidebar() {
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-[#1a1a1a] transition-colors"
           >
-            <span className="text-lg">🚪</span>
+            <ArrowRightOnRectangleIcon className="h-5 w-5" />
             {isOpen && <span>Logout</span>}
           </button>
         </div>

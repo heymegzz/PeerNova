@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import {
+  UserGroupIcon,
+  BookOpenIcon,
+  UserIcon,
+  ChartBarIcon,
+  AcademicCapIcon,
+  LightBulbIcon,
+} from '@heroicons/react/24/outline';
 import Button from '../components/common/Button';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import axiosInstance from '../api/axios';
@@ -49,38 +57,62 @@ function Dashboard() {
     {
       title: 'Study Groups',
       description: 'Discover and join active study groups across your campus.',
-      icon: '👥',
+      icon: UserGroupIcon,
       to: '/study-groups',
       cta: 'Browse Groups',
+      color: 'text-blue-400',
     },
     {
       title: 'Resources',
       description: 'Upload notes, slides, and materials for your peers.',
-      icon: '📚',
+      icon: BookOpenIcon,
       to: '/resources',
       cta: 'Explore Resources',
+      color: 'text-purple-400',
     },
     {
       title: 'Profile',
       description: 'Update your profile and see your contribution stats.',
-      icon: '👤',
+      icon: UserIcon,
       to: '/profile',
       cta: 'View Profile',
+      color: 'text-green-400',
     },
   ];
+
+  const quotes = [
+    "Alone we can do so little; together we can do so much. - Helen Keller",
+    "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
+    "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
+    "Learning never exhausts the mind. - Leonardo da Vinci",
+    "Knowledge is power. Information is liberating. - Kofi Annan",
+  ];
+
+  const [currentQuote] = useState(() => 
+    quotes[Math.floor(Math.random() * quotes.length)]
+  );
 
   const statsList = [
     {
       label: 'Groups Joined',
       value: stats.groupsJoined,
+      icon: UserGroupIcon,
+      color: 'text-blue-400',
+      bgColor: 'bg-blue-400/10',
     },
     {
       label: 'Groups Created',
       value: stats.groupsCreated,
+      icon: AcademicCapIcon,
+      color: 'text-purple-400',
+      bgColor: 'bg-purple-400/10',
     },
     {
       label: 'Resources Uploaded',
       value: stats.resourcesUploaded,
+      icon: BookOpenIcon,
+      color: 'text-green-400',
+      bgColor: 'bg-green-400/10',
     },
   ];
 
@@ -90,49 +122,86 @@ function Dashboard() {
       description="Here’s a quick overview of your activity and shortcuts to the most important areas of PeerNova."
     >
       <div className="space-y-8">
-        {/* Stats row */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {statsList.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-xl border border-[#1a1a1a] bg-[#111111] px-4 py-3"
-            >
-              <p className="text-xs text-gray-400 mb-1">{stat.label}</p>
-              <p className="text-2xl md:text-3xl font-semibold text-white">
-                {stat.value}
+        {/* Welcome Quote Section */}
+        <section className="rounded-2xl border border-[#1a1a1a] bg-gradient-to-br from-[#111111] to-[#0a0a0a] p-6 md:p-8">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+                <LightBulbIcon className="h-6 w-6 text-yellow-400" />
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-white font-semibold text-sm mb-2">Daily Inspiration</h3>
+              <p className="text-gray-300 text-sm md:text-base italic leading-relaxed">
+                "{currentQuote}"
               </p>
             </div>
-          ))}
+          </div>
+        </section>
+
+        {/* Stats row */}
+        <section>
+          <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <ChartBarIcon className="h-4 w-4" />
+            Your Activity
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {statsList.map((stat) => {
+              const IconComponent = stat.icon;
+              return (
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-[#1a1a1a] bg-[#111111] p-5 hover:border-[#333333] transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                      <IconComponent className={`h-5 w-5 ${stat.color}`} />
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-400 mb-2">{stat.label}</p>
+                  <p className="text-3xl md:text-4xl font-bold text-white">
+                    {stat.value}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* Quick links */}
         <section>
-          <h2 className="text-sm font-semibold text-white mb-3">
-            Get started
+          <h2 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <AcademicCapIcon className="h-4 w-4" />
+            Quick Actions
           </h2>
           <div className="grid md:grid-cols-3 gap-4">
-            {quickLinks.map((item) => (
-              <Link
-                key={item.title}
-                to={item.to}
-                className="group block rounded-xl border border-[#1a1a1a] bg-[#111111] p-5 hover:border-[#333333] hover:-translate-y-0.5 transition-all duration-300"
-              >
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="text-white font-semibold mb-1 text-base">
-                  {item.title}
-                </h3>
-                <p className="text-gray-400 text-xs mb-4">
-                  {item.description}
-                </p>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="group-hover:bg-white group-hover:text-black"
+            {quickLinks.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <Link
+                  key={item.title}
+                  to={item.to}
+                  className="group block rounded-xl border border-[#1a1a1a] bg-[#111111] p-6 hover:border-[#333333] hover:-translate-y-1 transition-all duration-300"
                 >
-                  {item.cta}
-                </Button>
-              </Link>
-            ))}
+                  <div className={`inline-flex p-3 rounded-xl bg-[#1a1a1a] mb-4 group-hover:bg-white/10 transition-colors`}>
+                    <IconComponent className={`h-6 w-6 ${item.color}`} />
+                  </div>
+                  <h3 className="text-white font-semibold mb-2 text-base">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-400 text-xs mb-4 leading-relaxed">
+                    {item.description}
+                  </p>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="group-hover:bg-white group-hover:text-black w-full"
+                  >
+                    {item.cta}
+                  </Button>
+                </Link>
+              );
+            })}
           </div>
         </section>
       </div>

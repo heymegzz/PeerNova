@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ExclamationTriangleIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import ResourceCard from '../components/cards/ResourceCard';
 import Button from '../components/common/Button';
@@ -351,7 +352,7 @@ function Resources() {
               <LoadingSpinner fullPage message="Loading resources..." />
             ) : isError ? (
               <EmptyState
-                icon="⚠️"
+                icon={ExclamationTriangleIcon}
                 title="Unable to load resources"
                 message="There was an error fetching resources. Please try again in a moment."
                 actionText="Retry"
@@ -359,7 +360,7 @@ function Resources() {
               />
             ) : resources.length === 0 ? (
               <EmptyState
-                icon="📚"
+                icon={BookOpenIcon}
                 title="No resources found"
                 message="Try adjusting your search or filters, or upload a new resource to get started."
                 actionText="Upload a Resource"

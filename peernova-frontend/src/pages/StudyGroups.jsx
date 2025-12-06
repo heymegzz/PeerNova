@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { ExclamationTriangleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import StudyGroupCard from '../components/cards/StudyGroupCard';
 import Button from '../components/common/Button';
@@ -374,7 +375,7 @@ function StudyGroups() {
               <LoadingSpinner fullPage message="Loading study groups..." />
             ) : isError ? (
               <EmptyState
-                icon="⚠️"
+                icon={ExclamationTriangleIcon}
                 title="Unable to load study groups"
                 message="There was an error fetching study groups. Please try again in a moment."
                 actionText="Retry"
@@ -382,7 +383,7 @@ function StudyGroups() {
               />
             ) : groups.length === 0 ? (
               <EmptyState
-                icon="👥"
+                icon={UserGroupIcon}
                 title="No study groups found"
                 message="Try adjusting your search or filters, or create a new study group to get started."
                 actionText="Create a Group"

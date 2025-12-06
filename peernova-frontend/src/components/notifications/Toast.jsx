@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 function Toast({ id, type = 'info', message, onClose, duration = 3000 }) {
   useEffect(() => {
@@ -23,9 +24,9 @@ function Toast({ id, type = 'info', message, onClose, duration = 3000 }) {
         <button
           type="button"
           onClick={() => onClose?.(id)}
-          className="ml-2 text-xs opacity-80 hover:opacity-100"
+          className="ml-2 opacity-80 hover:opacity-100"
         >
-          ✕
+          <XMarkIcon className="h-4 w-4" />
         </button>
       </div>
     </div>

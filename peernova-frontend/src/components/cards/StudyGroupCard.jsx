@@ -1,3 +1,4 @@
+import { UserGroupIcon } from '@heroicons/react/24/outline';
 import Button from '../common/Button';
 
 function StudyGroupCard({
@@ -35,8 +36,9 @@ function StudyGroupCard({
         <div className="col-span-12 md:col-span-4 text-gray-400 text-xs truncate">
           {group.description}
         </div>
-        <div className="col-span-6 md:col-span-1 text-gray-300 text-xs">
-          👥 {group.memberCount ?? 0}
+        <div className="col-span-6 md:col-span-1 text-gray-300 text-xs flex items-center gap-1">
+          <UserGroupIcon className="h-4 w-4" />
+          {group.memberCount ?? 0}
         </div>
         <div className="col-span-6 md:col-span-2 flex items-center justify-end gap-2">
           <Button variant="ghost" size="sm" onClick={handleJoinLeave}>
@@ -63,8 +65,9 @@ function StudyGroupCard({
         <span className="inline-flex items-center rounded-full bg-[#1a1a1a] px-3 py-1 text-xs text-gray-300">
           {group.subject}
         </span>
-        <span className="text-xs text-gray-400">
-          👥 {group.memberCount ?? 0}
+        <span className="text-xs text-gray-400 flex items-center gap-1">
+          <UserGroupIcon className="h-4 w-4" />
+          {group.memberCount ?? 0}
         </span>
       </div>
       <div className="mb-3">
