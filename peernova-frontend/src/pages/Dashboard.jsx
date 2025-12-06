@@ -19,26 +19,51 @@ function Dashboard() {
   const navigate = useNavigate();
   const [localUser, setLocalUser] = useState(null);
 
+  // Quotes array - defined at top level
+  const quotes = [
+    "Alone we can do so little; together we can do so much. - Helen Keller",
+    "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
+    "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
+    "Learning never exhausts the mind. - Leonardo da Vinci",
+    "Knowledge is power. Information is liberating. - Kofi Annan",
+  ];
+
+  // Initialize quote at top level (hooks must be called unconditionally)
+  const [currentQuote] = useState(() => 
+    quotes[Math.floor(Math.random() * quotes.length)]
+  );
+
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
-      setLocalUser(JSON.parse(userData));
+      try {
+        setLocalUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        localStorage.removeItem('user');
+        navigate('/login');
+      }
     } else {
       navigate('/login');
     }
   }, [navigate]);
 
   // Fetch profile stats from API
-  const { data: profile, isLoading } = useQuery({
+  const { data: profile, isLoading, isError, error } = useQuery({
     queryKey: ['dashboard-profile'],
     queryFn: async () => {
       const response = await axiosInstance.get(ENDPOINTS.PROFILE);
       return response.data.data;
     },
     enabled: !!localUser, // Only fetch if user is logged in
+    retry: 1,
   });
 
-  if (!localUser || isLoading) {
+  if (!localUser) {
+    return null; // Will redirect to login
+  }
+
+  if (isLoading) {
     return (
       <DashboardLayout title="Dashboard">
         <LoadingSpinner fullPage message="Loading dashboard..." />
@@ -46,7 +71,12 @@ function Dashboard() {
     );
   }
 
-  const user = localUser;
+  // Handle error gracefully - show dashboard with default stats
+  if (isError) {
+    console.error('Dashboard error:', error);
+  }
+
+  const user = localUser || {};
   const stats = profile?.stats || {
     groupsJoined: 0,
     groupsCreated: 0,
@@ -80,18 +110,6 @@ function Dashboard() {
     },
   ];
 
-  const quotes = [
-    "Alone we can do so little; together we can do so much. - Helen Keller",
-    "The beautiful thing about learning is that no one can take it away from you. - B.B. King",
-    "Education is the most powerful weapon which you can use to change the world. - Nelson Mandela",
-    "Learning never exhausts the mind. - Leonardo da Vinci",
-    "Knowledge is power. Information is liberating. - Kofi Annan",
-  ];
-
-  const [currentQuote] = useState(() => 
-    quotes[Math.floor(Math.random() * quotes.length)]
-  );
-
   const statsList = [
     {
       label: 'Groups Joined',
@@ -116,10 +134,13 @@ function Dashboard() {
     },
   ];
 
+  // Get user name safely
+  const userName = user?.name || user?.fullName || user?.email?.split('@')[0] || 'Student';
+
   return (
     <DashboardLayout
-      title={`Welcome back, ${user.name || user.fullName || 'Student'}!`}
-      description="Here’s a quick overview of your activity and shortcuts to the most important areas of PeerNova."
+      title={`Welcome back, ${userName}!`}
+      description="Here's a quick overview of your activity and shortcuts to the most important areas of PeerNova."
     >
       <div className="space-y-8">
         {/* Welcome Quote Section */}
